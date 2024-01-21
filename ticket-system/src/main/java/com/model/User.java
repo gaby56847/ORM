@@ -86,6 +86,10 @@ public class User {
         this.password = password;
     }
 
+    public void receiveMessage(String message) {
+        UserNotificationManager.addNotification(id, "Received Message: " + message) ;
+    }
+
     // JPQL query to get users by role
     public static List<User> getUsersByRole(EntityManager em, String roleName) {
         String jpql = "SELECT u FROM User u WHERE u.role.roleName = :roleName";

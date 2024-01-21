@@ -20,6 +20,7 @@ import com.model.Role;
 import com.model.Status;
 import com.model.Ticket;
 import com.model.User;
+import com.model.UserNotificationManager;
 
 public class Main {
 
@@ -56,9 +57,36 @@ public class Main {
       
             if(choice == 1) {
                 loggedInUser = login(scanner);
+                // Inside your main method after successful login
+                if (loggedInUser != null) {
+                    List<Ticket> assignedTickets = Ticket.getTicketsByAssignee(session, loggedInUser);
+                    System.out.println("Tickets assigned to you:");
+                    
+                    for (Ticket ticket : assignedTickets) {
+                        System.out.println("Ticket ID: " + ticket.getId());
+                        System.out.println("Description: " + ticket.getDescription());
+                        
+                        // Display comments for the ticket
+                        List<Comments> comments = ticket.getComments();
+                        if (!comments.isEmpty()) {
+                            System.out.println("Comments:");
+                            for (Comments comment : comments) {
+                                System.out.println(" - " + comment.getDescription());
+                            }
+                        } else {
+                            System.out.println("No comments for this ticket.");
+                        }
+                        
+                        System.out.println();
+                    }
+                
+                    List<String> notifications = UserNotificationManager.getNotifications(loggedInUser.getId());
+                    System.out.println(notifications);
+                }
+
                 if (loggedInUser == null) {
                     System.out.println("Invalid login credentials");
-                    continue; // Retry login if unsuccessful
+                    continue; 
                 }
             } else if (choice == 2) {
               register(scanner);
@@ -998,6 +1026,7 @@ public class Main {
             System.out.println("Error creating and saving priorities. Please check the logs.");
         }
     }
+    
 
     private static void executeQueriesOnStartup(Session session) {
         // Your query execution logic here
@@ -1016,8 +1045,5 @@ public class Main {
                 .setParameter("status_name", statusName)
                 .getSingleResult();
     }
-
-    
-
 
 }

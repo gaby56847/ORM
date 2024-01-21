@@ -2,6 +2,9 @@ package com.model;
 import com.model.Comments;
 
 import javax.persistence.*;
+
+import org.hibernate.Hibernate;
+
 import java.util.Date;
 import java.util.List;
 
@@ -36,10 +39,6 @@ public class Ticket implements TicketObserver{
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
     private List<Comments> comments;
-
-    public List<Comments> getComments() {
-        return comments;
-    }
 
     public void addComment(Comments comment) {
         comments.add(comment);
@@ -143,7 +142,15 @@ public class Ticket implements TicketObserver{
     }
 
     public void update(Ticket ticket) {
-        System.out.println("Notification: Ticket with ID " + ticket.getId() + " has been updated.");
+        String message = "Notification: Ticket with ID " + ticket.getId() + " has been updated.";
+        sendMessage(message);
+    }
+
+    public void sendMessage(String message) {
+        // Assuming ticketOwner is the user to be notified
+        if (assignedUser != null) {
+            assignedUser.receiveMessage(message);
+        }
     }
 
     // JPQL query to get all Tickets
@@ -156,4 +163,18 @@ public class Ticket implements TicketObserver{
         return query.getResultList();
 
     }
+
+    public static List<Ticket> getTicketsByAssignee(EntityManager em, User assignee) {
+        String jpql = "SELECT t FROM Ticket t WHERE t.assignedUser = :assignee";
+        TypedQuery<Ticket> query = em.createQuery(jpql, Ticket.class)
+                .setParameter("assignee", assignee);
+        return query.getResultList();
+    }
+
+    public List<Comments> getComments() {
+        // Ensure that comments are loaded from the database before returning
+        Hibernate.initialize(comments);
+        return comments;
+    }
+
 }
