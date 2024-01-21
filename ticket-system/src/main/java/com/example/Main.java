@@ -47,6 +47,9 @@ public class Main {
         // Use session to perform operations
         Scanner scanner = new Scanner(System.in);
 
+        // Execute queries on startup
+        executeQueriesOnStartup(session);
+
         while(session != null) {
 
             int choice = welcomeMenu(scanner);
@@ -995,6 +998,25 @@ public class Main {
             System.out.println("Error creating and saving priorities. Please check the logs.");
         }
     }
+
+    private static void executeQueriesOnStartup(Session session) {
+        // Your query execution logic here
+        // Example:
+        String jpql = "SELECT COUNT(t) FROM Ticket t WHERE t.status = :status";
+        Long count = (Long) session.createQuery(jpql)
+                .setParameter("status", getStatusByName("NEW"))
+                .getSingleResult();
+        System.out.println("Total open tickets: " + count);
+    }
+    
+    private static Status getStatusByName(String statusName) {
+        // Your logic to retrieve Status entity by name
+        // Example:
+        return (Status) session.createQuery("FROM Status WHERE status_name = :status_name")
+                .setParameter("status_name", statusName)
+                .getSingleResult();
+    }
+
     
 
 
