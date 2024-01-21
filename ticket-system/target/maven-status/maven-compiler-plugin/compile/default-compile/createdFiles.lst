@@ -1,0 +1,9 @@
+com\model\Role.class
+com\example\Main.class
+com\model\Profile.class
+com\model\Status.class
+com\model\User.class
+com\model\Category.class
+com\model\Comments.class
+com\model\Priority.class
+com\model\Ticket.class

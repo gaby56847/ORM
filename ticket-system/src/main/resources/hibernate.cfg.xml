@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+
+    <session-factory>
+
+        <!-- JDBC Database connection settings -->
+        <property name="connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="connection.url">jdbc:mysql://localhost:3306/hibernate</property>
+        <property name="connection.username">root</property>
+        <property name="connection.password">gaby</property>
+
+        <!-- <property name="hibernate.archive.autodetection" value="class, hbm"/>
+        <property name="hibernate.package_scanner" value="org.hibernate.boot.archive.scan.internal.PackageNamesScanner"/>
+        <property name="hibernate.scan.autodetection" value="class"/>
+        <property name="hibernate.scan.exclude_unlisted_classes" value="false"/>
+        <property name="hibernate.search.autoregister_listeners" value="false"/> -->
+
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.format_sql">false</property>
+
+
+
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
+
+        <!-- Print executed SQL to stdout -->
+        <property name="show_sql">true</property>
+
+	   <!-- Update database on startup -->
+	   <property name="hbm2ddl.auto">update</property>
+
+	   <!-- Mapping entity classes -->
+        <mapping class="com.model.User"/>
+        <mapping class="com.model.Profile"/>
+        <mapping class="com.model.Role"/>
+        <mapping class="com.model.Category"/>
+        <mapping class="com.model.Priority"/>
+        <mapping class="com.model.Comments"/>
+        <mapping class="com.model.Status"/>
+        <mapping class="com.model.User"/>
+        <mapping class="com.model.Ticket"/>
+
+    </session-factory>
+
+</hibernate-configuration>
