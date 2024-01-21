@@ -171,6 +171,30 @@ public class Ticket implements TicketObserver{
         return query.getResultList();
     }
 
+    public static List<Ticket> getTicketsByCategory(EntityManager em, Category category) {
+
+        String jpql = "SELECT t FROM Ticket t WHERE t.category = :category";
+        
+        TypedQuery<Ticket> query = em.createQuery(jpql, Ticket.class);
+      
+        query.setParameter("category", category);
+        
+        return query.getResultList();
+      
+    }
+
+    public static List<Ticket> getTicketsByPriority(EntityManager em, Priority priority) {
+
+        String jpql = "SELECT t FROM Ticket t WHERE t.priority = :priority";
+        
+        TypedQuery<Ticket> query = em.createQuery(jpql, Ticket.class);
+      
+        query.setParameter("priority", priority);
+        
+        return query.getResultList();
+      
+    }
+
     public List<Comments> getComments() {
         // Ensure that comments are loaded from the database before returning
         Hibernate.initialize(comments);

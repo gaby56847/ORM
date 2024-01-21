@@ -308,8 +308,9 @@ public class Main {
     public static void ticketMenu(User user, Scanner scanner) {
         System.out.println("1. Tickets");
         System.out.println("2. Create Ticket");
-        System.out.println("3. Edit Ticket");
-        System.out.println("4. Logout");
+        System.out.println("3. Filter Ticket");
+        System.out.println("4. Edit Ticket");
+        System.out.println("5. Logout");
 
         System.out.print("Choose option: ");
         int choice = scanner.nextInt();
@@ -323,9 +324,12 @@ public class Main {
                 createTicket(user, scanner);
                 break;
             case 3:
-                updateTicket(user, scanner);
+                filterTicket(user, scanner);
                 break;
             case 4:
+                updateTicket(user, scanner);
+                break;
+            case 5:
                 System.out.println("Logout successful!");
                 session.close();
                 System.exit(0);
@@ -815,6 +819,64 @@ public class Main {
             e.printStackTrace();
             System.out.println("Error updating ticket. Please try again.");
         }
+    }
+
+    public static void filterTicket(User user, Scanner scanner) {
+        System.out.println("1. By category");
+        System.out.println("2. By Priority");
+        System.out.println("3. Logout");
+
+        System.out.print("Choose option: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); 
+
+        switch (choice) {
+            case 1:
+                System.out.print("Enter category to filter by: ");
+                String categoryName = scanner.nextLine();
+                Category category = session.createQuery("SELECT c FROM Category c WHERE c.categorieName = :name", Category.class)
+                                            .setParameter("name", categoryName)
+                                            .getSingleResult();
+                List<Ticket> tickets = Ticket.getTicketsByCategory(session, category);
+                // Print header
+                System.out.println("ID \t Owner \t Assignee \t Description ");
+                
+                // Print each ticket with ID 
+                for(Ticket c : tickets) {
+                System.out.println(c.getId() + " \t " + c.getTicketOwner()+ " \t " + c.getAssignedUser() + " \t " + c.getDescription()); 
+                }
+                System.out.println();
+
+                // Display the table menu
+                tableMenu(user, scanner);
+                break;
+            case 2:
+                System.out.print("Enter priority to filter by: ");
+                String priorityName = scanner.nextLine();
+                Priority priority = session.createQuery("SELECT p FROM Priority p WHERE p.priorityName = :name", Priority.class)
+                                            .setParameter("name", priorityName)
+                                            .getSingleResult();
+                List<Ticket> ptickets = Ticket.getTicketsByPriority(session, priority);
+                // Print header
+                System.out.println("ID \t Owner \t Assignee \t Description ");
+                
+                // Print each ticket with ID 
+                for(Ticket c : ptickets) {
+                System.out.println(c.getId() + " \t " + c.getTicketOwner()+ " \t " + c.getAssignedUser() + " \t " + c.getDescription()); 
+                }
+                System.out.println();
+
+                // Display the table menu
+                tableMenu(user, scanner);
+                break;
+            case 3:
+                System.out.println("Logout successful!");
+                session.close();
+                System.exit(0);
+            default:
+                System.out.println("Invalid choice. Please try again.");
+        }
+        
     }
 
     public static Long getTicketIdInput(Scanner scanner) {
